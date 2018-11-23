@@ -20,43 +20,44 @@ module SinespClient
 
   def self.search(plate)
 
-    key = "#8.1.0#Mw6HqdLgQsX41xAGZgsF"
+    key = "#8.1.0#g8LzUadkEHs7mbRqbX5l"
     digest = OpenSSL::Digest.new('sha1')
     hash = OpenSSL::HMAC.hexdigest(digest, plate + key, plate)
 
-    body = "<v:Envelope xmlns:i=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:d=\"http://www.w3.org/2001/XMLSchema\" xmlns:c=\"http://schemas.xmlsoap.org/soap/encoding/\" xmlns:v=\"http://schemas.xmlsoap.org/soap/envelope/\">
-             <v:Header>
-              <b>Google Android SDK built for x86</b>
-              <c>ANDROID</c>
-              <d>8.1.0</d>
-              <e>4.3.2</e>
-              <f>10.0.2.15</f>
-              <g>#{hash}</g>
-              <h>#{long}</h>
-              <i>#{lat}</i>
-              <k />
-              <l>#{Time.now}</l>
-              <m>8797e74f0d6eb7b1ff3dc114d4aa12d3</m>
-             </v:Header>
-             <v:Body>
-              <n0:getStatus xmlns:n0=\"http://soap.ws.placa.service.sinesp.serpro.gov.br/\">
-               <a>#{plate}</a>
-              </n0:getStatus>
-             </v:Body>
-            </v:Envelope>"
+    body = "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\" ?>
+      <v:Envelope xmlns:v=\"http://schemas.xmlsoap.org/soap/envelope/\">
+      <v:Header>
+        <b>samsung GT-I9192</b>
+        <c>ANDROID</c>
+        <d>8.1.0</d>
+        <i>#{lat}</i>
+        <e>4.1.5</e>
+        <f>10.0.0.1</f>
+        <g>#{hash}</g>
+        <k></k>
+        <h>#{long}</h>
+        <l>#{Time.now.strftime('%Y-%m-%d %H:%M:%S')}</l>
+        <m>8797e74f0d6eb7b1ff3dc114d4aa12d3</m>
+      </v:Header>
+      <v:Body>
+        <n0:getStatus xmlns:n0=\"http://soap.ws.placa.service.sinesp.serpro.gov.br/\">
+          <a>#{plate}</a>
+        </n0:getStatus>
+      </v:Body>
+    </v:Envelope>"
 
-
-    headers = { "Content-type" => "application/x-www-form-urlencoded; charset=UTF-8",
-                "Accept" => "text/plain, */*; q=0.01",
-                "Cache-Control" => "no-cache",
-                "Pragma" => "no-cache",
-                "Content-length" => body.length.to_s,
-                "User-Agent" => "SinespCidadao/4.2.3 CFNetwork/808.1.4 Darwin/16.1.0"
+    headers = {
+      'Content-type' => 'application/x-www-form-urlencoded; charset=UTF-8',
+      'Accept' => 'text/plain, */*; q=0.01',
+      'Cache-Control' => 'no-cache',
+      'Pragma' => 'no-cache',
+      'Content-length' => body.length.to_s,
+      'User-Agent' => 'SinespCidadao/4.2.3 CFNetwork/808.1.4 Darwin/16.1.0'
     }
 
     #begin
 
-    response = post("https://189.9.194.154/sinesp-cidadao/mobile/consultar-placa/v3", body: body, headers: headers, timeout: 20)
+    response = post("https://cidadao.sinesp.gov.br/sinesp-cidadao/mobile/consultar-placa/v4", body: body, headers: headers, timeout: 20)
 
     #rescue
     #  return nil
